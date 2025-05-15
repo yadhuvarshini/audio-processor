@@ -73,3 +73,28 @@ func (s *MetadataStore) GetBySessionID(sessionID string) []model.FinalResult {
 	return results
 }
 
+func (s *MetadataStore) ListAllIDs() (chunkIDs, sessionIDs, userIDs []string) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	chunkSet := make(map[string]struct{})
+	sessionSet := make(map[string]struct{})
+	userSet := make(map[string]struct{})
+
+	for _, v := range s.chunks {
+		chunkSet[v.ChunkID] = struct{}{}
+		sessionSet[v.SessionID] = struct{}{}
+		userSet[v.UserID] = struct{}{}
+	}
+
+	for id := range chunkSet {
+		chunkIDs = append(chunkIDs, id)
+	}
+	for id := range sessionSet {
+		sessionIDs = append(sessionIDs, id)
+	}
+	for id := range userSet {
+		userIDs = append(userIDs, id)
+	}
+	return
+}
+
