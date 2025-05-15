@@ -11,7 +11,7 @@ type Pipeline struct {
 	ValidateChan chan model.AudioChunk
 	TransformChan chan model.AudioChunk
 	ExtractChan chan model.ChunkMetadata
-	StorageChan chan model.ChunkMetadata
+	StorageChan chan model.FinalResult
 }
 
 func NewPipeline(ctx context.Context) *Pipeline {
@@ -20,7 +20,7 @@ func NewPipeline(ctx context.Context) *Pipeline {
 		ValidateChan: make(chan model.AudioChunk, 100),
 		TransformChan: make(chan model.AudioChunk, 100),
 		ExtractChan:  make(chan model.ChunkMetadata, 100),
-		StorageChan:  make(chan model.ChunkMetadata, 100),
+		StorageChan:  make(chan model.FinalResult, 100),
 	}
 }
 

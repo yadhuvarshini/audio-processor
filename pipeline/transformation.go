@@ -3,18 +3,20 @@ package pipeline
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/yadhuvarshini/audio-processor/model"
 	"github.com/yadhuvarshini/audio-processor/utils"
 )
 
 
-// StartTransformationWorker reads from ValidateChan, transforms chunks, and sends to TransformChan
 func StartTransformationWorker(ctx context.Context, pipe *Pipeline, workerCount int) {
+	idleTimeout := 2 * time.Minute
+
 	for i := 0; i < workerCount; i++ {
 		go func(workerID int) {
 			log.Printf("⚙️  TransformationWorker %d started", workerID)
-			log.Println("DEBUG : Tr", pipe.ValidateChan)
+			log.Println("DEBUG : Tr", pipe.TransformChan)
 
 			for {
 				select {
@@ -22,7 +24,7 @@ func StartTransformationWorker(ctx context.Context, pipe *Pipeline, workerCount 
 					log.Printf("🛑 TransformationWorker %d shutting down", workerID)
 					return
 
-				case chunk := <-pipe.ValidateChan:
+				case chunk := <-pipe.TransformChan:
 					log.Printf("🧪 TransformationWorker %d: Processing chunk from user=%s", workerID, chunk.UserID)
 
 					// Simulate transformation logic
@@ -43,6 +45,10 @@ func StartTransformationWorker(ctx context.Context, pipe *Pipeline, workerCount 
 					pipe.ExtractChan <- metadata
 
 					log.Printf("✅ TransformationWorker %d: Sent metadata for user=%s", workerID, chunk.UserID)
+
+					case <-time.After(idleTimeout):
+					log.Printf("⌛ Validation worker %d idle for 2 minutes, shutting down", id)
+					return
 				}
 			}
 		}(i)

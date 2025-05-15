@@ -22,3 +22,14 @@ type ChunkMetadata struct {
 	Checksum   string // Checksum of the audio data (fake)
 	Transcript string // Transcription of the audio data (fake)
 }
+
+type FinalResult struct {
+	ChunkID    string
+	UserID     string
+	SessionID  string
+	Timestamp  time.Time
+	Checksum   string
+	Transcript string
+	Keywords   []string
+
+}
