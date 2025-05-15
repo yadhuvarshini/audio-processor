@@ -14,17 +14,17 @@ func StartExtractionWorker(ctx context.Context, pipe *Pipeline, workerCount int)
 	idleTimeout := 2 * time.Minute
 	
 	for i := 0; i < workerCount; i++ {
-		go func(workerID int) {
-			log.Printf("🔍 ExtractionWorker %d started", workerID)
+		go func(id int) {
+			log.Printf("🔍 ExtractionWorker %d started", id)
 
 			for {
 				select {
 				case <-ctx.Done():
-					log.Printf("🛑 ExtractionWorker %d shutting down", workerID)
+					log.Printf("🛑 ExtractionWorker %d shutting down", id)
 					return
 
 				case metadata := <-pipe.ExtractChan:
-					log.Printf("🔍 ExtractionWorker %d: Extracting from chunkID=%s", workerID, metadata.ChunkID)
+					log.Printf("🔍 ExtractionWorker %d: Extracting from chunkID=%s", id, metadata.ChunkID)
 
 					keywords := utils.FakeExtraction(metadata.Transcript)
 

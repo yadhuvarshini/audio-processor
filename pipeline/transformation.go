@@ -14,18 +14,18 @@ func StartTransformationWorker(ctx context.Context, pipe *Pipeline, workerCount 
 	idleTimeout := 2 * time.Minute
 
 	for i := 0; i < workerCount; i++ {
-		go func(workerID int) {
-			log.Printf("⚙️  TransformationWorker %d started", workerID)
+		go func(id int) {
+			log.Printf("⚙️  TransformationWorker %d started", id)
 			log.Println("DEBUG : Tr", pipe.TransformChan)
 
 			for {
 				select {
 				case <-ctx.Done():
-					log.Printf("🛑 TransformationWorker %d shutting down", workerID)
+					log.Printf("🛑 TransformationWorker %d shutting down", id)
 					return
 
 				case chunk := <-pipe.TransformChan:
-					log.Printf("🧪 TransformationWorker %d: Processing chunk from user=%s", workerID, chunk.UserID)
+					log.Printf("🧪 TransformationWorker %d: Processing chunk from user=%s", id, chunk.UserID)
 
 					// Simulate transformation logic
 					checksum := utils.GenerateChecksum(chunk.Data)
@@ -44,7 +44,7 @@ func StartTransformationWorker(ctx context.Context, pipe *Pipeline, workerCount 
 					// Send transformed metadata to next stage
 					pipe.ExtractChan <- metadata
 
-					log.Printf("✅ TransformationWorker %d: Sent metadata for user=%s", workerID, chunk.UserID)
+					log.Printf("✅ TransformationWorker %d: Sent metadata for user=%s", id, chunk.UserID)
 
 					case <-time.After(idleTimeout):
 					log.Printf("⌛ Validation worker %d idle for 2 minutes, shutting down", id)
