@@ -6,9 +6,9 @@ import (
 	"time"
 	"io"
 
-	"github.com/yadhuvarshini/audio-processsor/utils"
-	"github.com/yadhuvarshini/audio-processsor/model"
-	"github.com/yadhuvarshini/audio-processsor/pipeline"
+	"github.com/yadhuvarshini/audio-processor/utils"
+	"github.com/yadhuvarshini/audio-processor/model"
+	"github.com/yadhuvarshini/audio-processor/pipeline"
 )
 
 

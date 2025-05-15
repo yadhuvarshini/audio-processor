@@ -7,8 +7,8 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/yadhuvarshini/audio-processsor/api"
-	"github.com/yadhuvarshini/audio-processsor/pipeline"
+	"github.com/yadhuvarshini/audio-processor/api"
+	"github.com/yadhuvarshini/audio-processor/pipeline"
 )
 
 

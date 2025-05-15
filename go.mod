@@ -1,4 +1,4 @@
-module github.com/yadhuvarshini/audio-processsor
+module github.com/yadhuvarshini/audio-processor
 
 go 1.24.3
 

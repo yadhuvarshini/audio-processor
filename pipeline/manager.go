@@ -3,7 +3,7 @@ package pipeline
 import (
 
 	"context"  //concurrency control and exit
-	"github.com/yadhuvarshini/audio-processsor/model"
+	"github.com/yadhuvarshini/audio-processor/model"
 	
 	)
 type Pipeline struct {
