@@ -4,8 +4,6 @@ import (
 	"context"
 	"log"
 	"time"
-
-	"github.com/yadhuvarshini/audio-processsor/model"
 )
 
 // Starting the Worker pool
@@ -25,6 +23,8 @@ import (
 // Add chunk IDs or timestamps
 
 func StartIngestionWorker(ctx context.Context, p *Pipeline, workerCount int) {
+	idleTimeout := 2 * time.Minute
+
 	for i := 0; i < workerCount; i++ {
 		go func(id int) {
 			log.Printf("Ingestion worker %d started\n", id)
@@ -36,10 +36,15 @@ func StartIngestionWorker(ctx context.Context, p *Pipeline, workerCount int) {
 
 				case chunk := <-p.IngestChan:
 					// Simulate some processing delay
+					
 					time.Sleep(50 * time.Millisecond) // 50ms = 0.05s
 					log.Printf("Ingestion worker %d processing chunk from user=%s session=%s\n", id, chunk.UserID, chunk.SessionID)
 					// Pass the chunk to the next stage
 					p.ValidateChan <- chunk
+
+				case <-time.After(idleTimeout):
+					log.Println("⌛ Ingestion worker %d idle for 2 minutes, shutting down", id)
+					return
 				}
 			}
 		}(i)
@@ -53,3 +58,4 @@ func StartIngestionWorker(ctx context.Context, p *Pipeline, workerCount int) {
 // Enrich metadata (e.g., adding a unique chunk ID)
 // For example, if the audio is in a different format (e.g., WAV instead of MP3), the ingestion worker might convert it to the expected format before passing it to the next stage.
 // This is a simplified example, and in a real-world application, you would likely have more complex logic for handling different audio formats, error handling, and other considerations.
+

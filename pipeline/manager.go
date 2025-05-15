@@ -23,3 +23,4 @@ func NewPipeline(ctx context.Context) *Pipeline {
 		StorageChan:  make(chan model.AudioChunk, 100),
 	}
 }
+
