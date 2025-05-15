@@ -5,13 +5,13 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/yadhuvarshini/audio-processor/store"
+	"github.com/yadhuvarshini/audio-processor/storage"
 )
 
-var metadataStore *store.MetadataStore
+var metadataStore *storage.MetadataStore
 
 // Inject store (do this in main)
-func SetStore(s *store.MetadataStore) {
+func SetStore(s *storage.MetadataStore) {
 	metadataStore = s
 }
 
@@ -28,3 +28,13 @@ func GetChunkHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(result)
 }
+
+func GetUserChunksHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userID := vars["user_id"]
+
+	results := metadataStore.GetByUserID(userID)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(results)
+}
+

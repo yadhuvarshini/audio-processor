@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Audio Upload via WebSocket</title>
+</head>
+<body>
+  <h2>🎙️ Audio Uploader</h2>
+
+  <label>User ID:</label>
+  <input type="text" id="userId" placeholder="Enter your user ID" /><br /><br />
+
+  <label>Select Audio File:</label>
+  <input type="file" id="audioFile" accept="audio/*" /><br /><br />
+
+  <button onclick="uploadAudio()">Send via WebSocket</button>
+
+  <h3>📬 Server Responses:</h3>
+  <pre id="responses" style="background: #f0f0f0; padding: 10px;"></pre>
+
+  <script>
+    function generateSessionId() {
+      return 'sess_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    function getSessionId() {
+      let sessionId = sessionStorage.getItem("session_id");
+      if (!sessionId) {
+        sessionId = generateSessionId();
+        sessionStorage.setItem("session_id", sessionId);
+      }
+      return sessionId;
+    }
+
+    function uploadAudio() {
+      const userId = document.getElementById("userId").value.trim();
+      const fileInput = document.getElementById("audioFile");
+      const file = fileInput.files[0];
+      const sessionId = getSessionId();
+
+      const responsesEl = document.getElementById("responses");
+      responsesEl.textContent = ""; // clear previous
+
+      if (!userId || !file) {
+        alert("Please provide User ID and select a file.");
+        return;
+      }
+
+      const ws = new WebSocket("ws://localhost:8080/ws");
+
+      ws.binaryType = "arraybuffer";
+
+      ws.onopen = () => {
+        const metadata = {
+          user_id: userId,
+          session_id: sessionId,
+          filename: file.name,
+          timestamp: new Date().toISOString()
+        };
+
+        ws.send(JSON.stringify(metadata));
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const arrayBuffer = event.target.result;
+          ws.send(arrayBuffer);
+        };
+        reader.readAsArrayBuffer(file);
+      };
+
+      ws.onmessage = (event) => {
+        responsesEl.textContent += event.data + "\n";
+      };
+
+      ws.onerror = (err) => {
+        responsesEl.textContent += "❌ WebSocket error\n";
+        console.error("WebSocket error:", err);
+      };
+
+      ws.onclose = () => {
+        responsesEl.textContent += "🔒 WebSocket closed\n";
+      };
+    }
+  </script>
+</body>
+</html>
