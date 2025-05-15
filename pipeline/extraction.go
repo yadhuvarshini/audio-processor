@@ -3,7 +3,6 @@ package pipeline
 import (
 	"context"
 	"log"
-	"time"
 
 	"github.com/yadhuvarshini/audio-processor/utils"
 	"github.com/yadhuvarshini/audio-processor/model"
@@ -11,7 +10,6 @@ import (
 )
 
 func StartExtractionWorker(ctx context.Context, pipe *Pipeline, workerCount int) {
-	idleTimeout := 2 * time.Minute
 	
 	for i := 0; i < workerCount; i++ {
 		go func(id int) {
@@ -42,9 +40,6 @@ func StartExtractionWorker(ctx context.Context, pipe *Pipeline, workerCount int)
 
 					pipe.StorageChan <- result
 
-					case <-time.After(idleTimeout):
-					log.Printf("⌛ Validation worker %d idle for 2 minutes, shutting down", id)
-					return
 				}
 			}
 		}(i)

@@ -5,6 +5,9 @@ import (
 	"log"
 	"net/http"
 	"encoding/json"
+	"os"
+	"os/signal"
+	"syscall"
 
 
 	"github.com/gorilla/mux"
@@ -16,7 +19,7 @@ import (
 
 func main() {
 	r := mux.NewRouter()
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
 	store := storage.NewMetadataStore("data/chunks") // Folder to save JSON files
 
 	pipe := pipeline.NewPipeline(ctx) // Create or initialize the pipeline instance
@@ -61,6 +64,23 @@ func main() {
 		"user_ids":    users,
 	})
 }).Methods("GET")
+
+	
+	srv := &http.Server{
+		Addr:    ":8080",
+		Handler: r,
+	}
+
+	// Shutdown listener
+	go func() {
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+		<-c
+		log.Println("🔻 Shutting down...")
+		cancel() // trigger ctx.Done() for all workers
+		srv.Shutdown(context.Background())
+	}()
+
 
 	log.Println("🚀 Starting server on :8080")
 	log.Fatal(http.ListenAndServe(":8080", r))

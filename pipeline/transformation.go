@@ -3,7 +3,6 @@ package pipeline
 import (
 	"context"
 	"log"
-	"time"
 
 	"github.com/yadhuvarshini/audio-processor/model"
 	"github.com/yadhuvarshini/audio-processor/utils"
@@ -11,7 +10,6 @@ import (
 
 
 func StartTransformationWorker(ctx context.Context, pipe *Pipeline, workerCount int) {
-	idleTimeout := 2 * time.Minute
 
 	for i := 0; i < workerCount; i++ {
 		go func(id int) {
@@ -46,9 +44,7 @@ func StartTransformationWorker(ctx context.Context, pipe *Pipeline, workerCount 
 
 					log.Printf("✅ TransformationWorker %d: Sent metadata for user=%s", id, chunk.UserID)
 
-					case <-time.After(idleTimeout):
-					log.Printf("⌛ Validation worker %d idle for 2 minutes, shutting down", id)
-					return
+					
 				}
 			}
 		}(i)

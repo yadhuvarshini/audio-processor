@@ -23,8 +23,7 @@ import (
 // Add chunk IDs or timestamps
 
 func StartIngestionWorker(ctx context.Context, p *Pipeline, workerCount int) {
-	idleTimeout := 2 * time.Minute
-
+	
 	for i := 0; i < workerCount; i++ {
 		go func(id int) {
 			log.Printf("Ingestion worker %d started\n", id)
@@ -42,9 +41,7 @@ func StartIngestionWorker(ctx context.Context, p *Pipeline, workerCount int) {
 					p.ValidateChan <- chunk
 					log.Println("DEBUG 3",)
 
-				case <-time.After(idleTimeout):
-					log.Printf("⌛ Ingestion worker %d idle for 2 minutes, shutting down", id)
-					return
+				
 				}
 			}
 		}(i)
