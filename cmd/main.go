@@ -28,11 +28,6 @@ func main() {
 		api.UploadHandler(w, r, pipe)
 	}).Methods("POST")
 
-	r.HandleFunc("/ws", api.HandleWebSocket(pipe))
-
-	r.HandleFunc("/chunks/{id}", api.GetChunkHandler).Methods("GET")
-	r.HandleFunc("/sessions/{user_id}", api.GetUserChunksHandler).Methods("GET")
-
 
 	log.Println("🚀 Starting server on :8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
