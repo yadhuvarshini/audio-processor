@@ -15,6 +15,7 @@ func GenerateChunkID(chunk model.AudioChunk) string {
 
 // fakeTranscript simulates a transcription step
 func FakeTranscript(data []byte) string {
+	
 	return "This is a fake transcript."
 }
 

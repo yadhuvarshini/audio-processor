@@ -20,6 +20,7 @@ func main() {
 		pipe := pipeline.NewPipeline(ctx) // Create or initialize the pipeline instance
 		pipeline.StartIngestionWorker(ctx, pipe, 5)
 		pipeline.StartValidationWorkers(ctx, pipe, 5)    // 5 validation workers
+		pipeline.StartTransformationWorker(ctx,pipe,5)
 
 		api.UploadHandler(w, r, pipe)
 	}).Methods("POST")
