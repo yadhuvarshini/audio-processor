@@ -36,14 +36,14 @@ func StartIngestionWorker(ctx context.Context, p *Pipeline, workerCount int) {
 
 				case chunk := <-p.IngestChan:
 					// Simulate some processing delay
-					
 					time.Sleep(50 * time.Millisecond) // 50ms = 0.05s
 					log.Printf("Ingestion worker %d processing chunk from user=%s session=%s\n", id, chunk.UserID, chunk.SessionID)
-					// Pass the chunk to the next stage
+					log.Println("DEBUG 2", p.ValidateChan)
 					p.ValidateChan <- chunk
+					log.Println("DEBUG 3",)
 
 				case <-time.After(idleTimeout):
-					log.Println("⌛ Ingestion worker %d idle for 2 minutes, shutting down", id)
+					log.Printf("⌛ Ingestion worker %d idle for 2 minutes, shutting down", id)
 					return
 				}
 			}
