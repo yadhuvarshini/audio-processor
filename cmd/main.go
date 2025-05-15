@@ -19,8 +19,9 @@ func main() {
 	r.HandleFunc("/upload", func(w http.ResponseWriter, r *http.Request) {
 		pipe := pipeline.NewPipeline(ctx) // Create or initialize the pipeline instance
 		pipeline.StartIngestionWorker(ctx, pipe, 5)
-		pipeline.StartValidationWorker(ctx, 5)    // 5 validation workers
-		
+		pipeline.StartValidationWorkers(ctx, pipe, 5)    // 5 validation workers
+		pipeline.StartTransformationWorker(ctx, pipe, 3)
+
 		api.UploadHandler(w, r, pipe)
 	}).Methods("POST")
 

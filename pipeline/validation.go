@@ -9,6 +9,8 @@ import (
 
 // Starts validation workers
 func StartValidationWorkers(ctx context.Context, p *Pipeline, workerCount int) {
+	idleTimeout := 2 * time.Minute
+
 	for i := 0; i < workerCount; i++ {
 		go func(id int) {
 			log.Printf("✅ Validation worker %d started", id)
@@ -30,6 +32,10 @@ func StartValidationWorkers(ctx context.Context, p *Pipeline, workerCount int) {
 
 					// Send to next stage
 					p.TransformChan <- chunk
+
+				case <-time.After(idleTimeout):
+					log.Println("⌛ Ingestion worker %d idle for 2 minutes, shutting down", id)
+					return
 				}
 			}
 		}(i)
