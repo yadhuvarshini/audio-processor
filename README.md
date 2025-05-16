@@ -306,7 +306,7 @@ server.Shutdown(ctx)
 🏁 10. Conclusion
 -----------------
 
-This project demonstrates a fully functional, concurrent Go application that processes audio stream metadata using channels, goroutines, and file-based persistence. It was completed in ~12 hours by a single developer and covers concurrency, pipeline design, HTTP APIs, and testing comprehensively.
+This project demonstrates a fully functional, concurrent Go application that processes audio stream metadata using channels, goroutines, and file-based persistence. It covers concurrency, pipeline design, HTTP APIs, and testing comprehensively.
 
 * * * * *
 
