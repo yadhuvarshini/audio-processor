@@ -311,5 +311,3 @@ This project demonstrates a fully functional, concurrent Go application that pro
 * * * * *
 
 *Developed with ❤️ by [Yadhuvarshini](https://github.com/yadhuvarshini/)*
-
-```
